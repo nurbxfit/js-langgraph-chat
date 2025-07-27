@@ -1,7 +1,7 @@
 import { ChatOllama } from "@langchain/ollama";
 
 export const llm = new ChatOllama({
-    model: "llama3.1",
+    model: "deepseek-r1",
     temperature: 0,
     maxRetries: 2
 });

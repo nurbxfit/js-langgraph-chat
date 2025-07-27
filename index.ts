@@ -1,5 +1,5 @@
 
-import { prompt } from "./src/prompts/basic";
+import { chatPrompt } from "./src/prompts/basic";
 import { llm } from "./src/llm";
 import ChatIO from "./src/utils/chat-io";
 import { v4 as uuidv4 } from "uuid";
@@ -16,8 +16,12 @@ const graph = new StateGraph(MessagesAnnotation);
 
 // define the node graph
 graph.addNode("model", async (state: typeof MessagesAnnotation.State) => {
-    const response = await llm.invoke(state.messages);
-    return { messages: response };
+    const prompt = await chatPrompt.invoke(state);
+    const response = await llm.invoke(prompt);
+
+    console.log('DEBUG:', response);
+
+    return { messages: [response] };
 })
     .addEdge(START, "model")
     .addEdge("model", END);
@@ -30,7 +34,7 @@ const app = graph.compile({ checkpointer: memory });
 const config = { configurable: { thread_id: uuidv4() } };
 
 
-console.log("Chat started. Type 'exit' to quit.");
+console.log("Chat started. Type '/exit' to quit.");
 while (true) {
     const input = await io.read();
     if (!input) break;
@@ -43,5 +47,7 @@ while (true) {
     ];
     const response = await app.invoke({ messages: userInput }, config);
     const lastMessage = response.messages[response.messages.length - 1]?.content;
-    io.write(lastMessage as string);
+    // clean up remove the thinking part
+    const cleanedText = String(lastMessage).replace(/<think>[\s\S]*?<\/think>/, "").trim()
+    io.write(cleanedText);
 }
