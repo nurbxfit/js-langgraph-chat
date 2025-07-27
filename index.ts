@@ -2,16 +2,46 @@
 import { prompt } from "./src/prompts/basic";
 import { llm } from "./src/llm";
 import ChatIO from "./src/utils/chat-io";
+import { v4 as uuidv4 } from "uuid";
+import { END, MemorySaver, MessagesAnnotation, START, StateGraph } from "@langchain/langgraph";
 
-const chain = prompt.pipe(llm);
+
+const chat_id = uuidv4();
 
 const io = new ChatIO();
+console.log('chat_id:', chat_id);
+
+// try using langraph to gives memory to the chat
+const graph = new StateGraph(MessagesAnnotation);
+
+// define the node graph
+graph.addNode("model", async (state: typeof MessagesAnnotation.State) => {
+    const response = await llm.invoke(state.messages);
+    return { messages: response };
+})
+    .addEdge(START, "model")
+    .addEdge("model", END);
+
+
+// Add memory
+const memory = new MemorySaver();
+
+const app = graph.compile({ checkpointer: memory });
+const config = { configurable: { thread_id: uuidv4() } };
+
 
 console.log("Chat started. Type 'exit' to quit.");
 while (true) {
     const input = await io.read();
     if (!input) break;
 
-    const response = await chain.invoke({ content: input });
-    io.write(response.content as string);
+    const userInput = [
+        {
+            role: 'user',
+            content: input
+        }
+    ];
+    const response = await app.invoke({ messages: userInput }, config);
+    const lastMessage = response.messages[response.messages.length - 1]?.content;
+    io.write(lastMessage as string);
 }
