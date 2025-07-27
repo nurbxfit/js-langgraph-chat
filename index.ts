@@ -1,40 +1,17 @@
-import { PromptTemplate } from "@langchain/core/prompts";
-import { ChatOllama } from "@langchain/ollama";
-import readline from 'readline';
 
-const chat = new ChatOllama({
-    model: "llama3.1",
-    temperature: 0,
-    maxRetries: 2
-});
+import { prompt } from "./src/prompts/basic";
+import { llm } from "./src/llm";
+import ChatIO from "./src/utils/chat-io";
 
-const prompt = new PromptTemplate({
-    template: "{content}",
-    inputVariables: ["content"]
-})
+const chain = prompt.pipe(llm);
 
-const chain = prompt.pipe(chat);
-
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-async function askQuestion() {
-    rl.question(">> ", async (input) => {
-        if (input.toLowerCase() === '/exit') {
-            rl.close();
-            return;
-        }
-
-        const result = await chain.invoke({ content: input });
-        console.log("🤖:", result.content);
-
-        // Ask again
-        askQuestion();
-    })
-}
+const io = new ChatIO();
 
 console.log("Chat started. Type 'exit' to quit.");
-askQuestion();
+while (true) {
+    const input = await io.read();
+    if (!input) break;
+
+    const response = await chain.invoke({ content: input });
+    io.write(response.content as string);
+}
