@@ -3,7 +3,7 @@ import ChatIO from "./utils/chat-io";
 import { v4 as uuidv4 } from "uuid";
 import { BinaryOperatorAggregate, CompiledStateGraph, END, MemorySaver, MessagesAnnotation, START, StateGraph, type Messages, type StateType } from "@langchain/langgraph";
 import { chatPrompt } from "./prompts/basic";
-import type { BaseMessage } from "@langchain/core/messages";
+import type { BaseMessage, MessageContent } from "@langchain/core/messages";
 
 interface ChatConfig {
     configurable: { thread_id: string };
@@ -27,6 +27,13 @@ class ChatApp {
         // init IO
         this.io = new ChatIO();
         // try using langraph to gives memory to the chat
+        const graph = this.createGraph();
+        this.app = graph.compile({ checkpointer: memory });
+        this.config = { configurable: { thread_id: uuidv4() } };
+
+    }
+
+    private createGraph() {
         const graph = new StateGraph(MessagesAnnotation);
 
         // define the node graph
@@ -35,8 +42,7 @@ class ChatApp {
             .addEdge(START, "model")
             .addEdge("model", END);
 
-        this.app = graph.compile({ checkpointer: memory });
-        this.config = { configurable: { thread_id: uuidv4() } };
+        return graph;
 
     }
 
@@ -50,7 +56,7 @@ class ChatApp {
 
     async listenInput() {
         const input = await this.io.read();
-        if (!input) return undefined;
+        if (input.toLowerCase() === '/exit') return undefined;
         return [
             {
                 role: 'user',
@@ -63,8 +69,13 @@ class ChatApp {
         messages: BinaryOperatorAggregate<BaseMessage[], Messages>;
     }>) {
         const lastMessage = data.messages[data.messages.length - 1]?.content;
-        const cleanedText = String(lastMessage).replace(/<think>[\s\S]*?<\/think>/, "").trim();
+        const cleanedText = this.cleanMessage(lastMessage);
         this.io.write(cleanedText)
+    }
+
+    private cleanMessage(message: string | MessageContent | undefined) {
+        const cleanedText = String(message).replace(/<think>[\s\S]*?<\/think>/, "").trim();
+        return cleanedText;
     }
 
 
@@ -88,6 +99,12 @@ class ChatApp {
             }
 
         }
+
+        this.cleanup();
+    }
+
+    async cleanup() {
+        await this.io.close?.();
     }
 }
 
