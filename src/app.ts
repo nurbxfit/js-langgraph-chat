@@ -5,7 +5,7 @@ import { BinaryOperatorAggregate, CompiledStateGraph, END, MemorySaver, Messages
 import { chatPrompt } from "./prompts/basic";
 import type { BaseMessage, MessageContent } from "@langchain/core/messages";
 
-interface ChatConfig {
+export interface ChatConfig {
     configurable: { thread_id: string };
 }
 
@@ -16,8 +16,7 @@ interface ChatState {
 class ChatApp {
     protected io!: ChatIO;
     protected app!: CompiledStateGraph<ChatState, any>;
-    protected config!: ChatConfig;
-    constructor(protected llm: ChatOllama, protected id: string = uuidv4()) {
+    constructor(protected llm: ChatOllama, protected config: ChatConfig = { configurable: { thread_id: uuidv4() } }) {
         this.init();
     }
 
@@ -29,7 +28,7 @@ class ChatApp {
         // try using langraph to gives memory to the chat
         const graph = this.createGraph();
         this.app = graph.compile({ checkpointer: memory });
-        this.config = { configurable: { thread_id: uuidv4() } };
+
 
     }
 
