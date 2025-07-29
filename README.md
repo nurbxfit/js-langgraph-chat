@@ -5,20 +5,17 @@
 | |__| (_| | | | | (_| | |_| | | | (_| | |_) | | | |  | |___| | | | (_| | |_ 
 |_____\__,_|_| |_|\__, |\____|_|  \__,_| .__/|_| |_|___\____|_| |_|\__,_|\__|
                   |___/                |_|        |_____|                    
-                                                                                                                                                     
 ```
 
+# Langraph Chat 🚀
 
-# langraph chat 🚀
+A simple chat app built with **Langraph** and **Langchain** using **Bun** and **TypeScript**.
 
-This is a simple chat app I built using Langraph and Langchain.
-Right now, it’s just a basic console-based interface where you can chat with a model.
-
-It saves your chat history using JSON files, so even if you restart the app, you can continue the convo like nothing happened.
-
-I built this mostly for fun (and learning), and I plan to add more stuff later, maybe a web interface, maybe more features, who knows.
-
-Most of the demos I found online use Python, so I wanted to show how to do it with JavaScript/TypeScript using Bun instead.
+> **Features:**
+> - Persistent chat history (JSON file)
+> - Console-based chat interface
+> - Fun system prompt: Dr. Gregory House (House M.D.)
+> - Easy setup and usage
 
 ---
 
@@ -29,11 +26,12 @@ Most of the demos I found online use Python, so I wanted to show how to do it wi
 ---
 
 ## Requirements
-- [Bun](https://bun.sh/) - Fast JavaScript runtime
-- [Langraph](https://langraph.com/) - Framework for building AI apps
-- [Langchain](https://langchain.com/) - Framework for LLM-powered stuff
-- [Node.js](https://nodejs.org/) - Needed for Bun
-- [TypeScript](https://www.typescriptlang.org/) - Because types are cool
+
+- [Bun](https://bun.sh/) — Fast JavaScript runtime
+- [Langraph](https://langraph.com/) — Framework for building AI apps
+- [Langchain](https://langchain.com/) — Framework for LLM-powered stuff
+- [Node.js](https://nodejs.org/) — Needed for Bun
+- [TypeScript](https://www.typescriptlang.org/) — Because types are cool
 
 ## Installation
 
@@ -47,17 +45,29 @@ bun install
 bun run dev
 ```
 
-## Features
-- Persistent chat history (so you don't lose your deep thoughts)
-- Simple chat interface
-- Built with Langraph and langchain
-- Console-based (for now)
+Type `/exit` in the chat console to quit.
 
-Just for fun, the ML system prompt is set up to sound like Dr. Gregory House from House M.D.  
-So yeah, you can have a snarky chat with him.
+---
 
+## Known Issues
+
+- Chat history is saved in a single JSON file (can get messy).
+- JSON format isn't ideal for chat history, but works for now.
+- File may get corrupted if the app crashes.
+- If corrupted, delete the file and start over.
+
+---
+
+## Up Next
+
+- Improve chat history management
+- Switch to a better storage (e.g., database)
+- Add a web interface
+- Integrate tools (search, etc.)
+
+---
 
 ## Notes
-This is a console app for now. I’m thinking of adding a web UI later.
 
-Chat history is saved in JSON, no database or fancy stuff.
+This is a demo app, built for fun and learning how to use Langraph and Langchain with Bun.
+
