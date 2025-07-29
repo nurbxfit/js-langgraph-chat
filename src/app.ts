@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { BinaryOperatorAggregate, CompiledStateGraph, END, MemorySaver, MessagesAnnotation, START, StateGraph, type Messages, type StateType } from "@langchain/langgraph";
 import { chatPrompt } from "./prompts/basic";
 import type { BaseMessage, MessageContent } from "@langchain/core/messages";
+import { JsonMemorySaver } from "./checkpointers/json-saver";
 
 export interface ChatConfig {
     configurable: { thread_id: string };
@@ -22,7 +23,8 @@ class ChatApp {
 
     init() {
         // create a memory server
-        const memory = new MemorySaver();
+        // const memory = new MemorySaver();
+        const memory = new JsonMemorySaver();
         // init IO
         this.io = new ChatIO();
         // try using langraph to gives memory to the chat
