@@ -5,17 +5,20 @@
 | |__| (_| | | | | (_| | |_| | | | (_| | |_) | | | |  | |___| | | | (_| | |_ 
 |_____\__,_|_| |_|\__, |\____|_|  \__,_| .__/|_| |_|___\____|_| |_|\__,_|\__|
                   |___/                |_|        |_____|                    
+                                                                                                                                                     
 ```
 
-# Langraph Chat 🚀
 
-A simple chat app built with **Langraph** and **Langchain** using **Bun** and **TypeScript**.
+# langraph chat 🚀
 
-> **Features:**
-> - Persistent chat history (JSON file)
-> - Console-based chat interface
-> - Fun system prompt: Dr. Gregory House (House M.D.)
-> - Easy setup and usage
+This is a simple chat app I built using Langraph and Langchain.
+Right now, it’s just a basic console-based interface where you can chat with a model.
+
+It saves your chat history using JSON files, so even if you restart the app, you can continue the convo like nothing happened.
+
+I built this mostly for fun (and learning), and I plan to add more stuff later, maybe a web interface, maybe more features, who knows.
+
+Most of the demos I found online use Python, so I wanted to show how to do it with JavaScript/TypeScript using Bun instead.
 
 ---
 
@@ -32,6 +35,7 @@ A simple chat app built with **Langraph** and **Langchain** using **Bun** and **
 - [Langchain](https://langchain.com/) — Framework for LLM-powered stuff
 - [Node.js](https://nodejs.org/) — Needed for Bun
 - [TypeScript](https://www.typescriptlang.org/) — Because types are cool
+- [ollama deepseek-r1 local model](https://ollama.com/library/deepseek-r1) — For the chat model
 
 ## Installation
 
